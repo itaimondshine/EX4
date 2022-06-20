@@ -1,6 +1,6 @@
 import spacy
 FILE_DATA = 'Corpus.TRAIN.txt'
-nlp = spacy.load('en_core_web_sm')
+spacyTagger = spacy.load('en_core_web_sm')
 
 
 class Data:
@@ -10,7 +10,7 @@ class Data:
 
     def createData(self):
         for id, sent in self.corpus.items():
-            chunk_sent = nlp(sent)
+            chunk_sent = spacyTagger(sent)
             print(chunk_sent)
 
 
