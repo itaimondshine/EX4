@@ -1,4 +1,5 @@
 import codecs
+from collections import defaultdict
 
 import spacy
 
@@ -12,8 +13,8 @@ ROOT_IDX = 0
 class NLPDataParser:
     @classmethod
     def parse(cls, corpus_file, annotations_file):
-        corpus = cls.readCorpus(corpus_file)
-        annotations = cls.readAnnotations(annotations_file)
+        corpus = cls.read_corpus(corpus_file)
+        annotations = cls.read_annotations(annotations_file)
 
         data = []
         for sent_id, sentence in corpus.items():
@@ -22,7 +23,7 @@ class NLPDataParser:
         return data
 
     @staticmethod
-    def clean_raw_text(text):
+    def _clean_raw_text(text):
         return text.rstrip(".")
 
     @classmethod
@@ -72,7 +73,7 @@ class NLPDataParser:
     def _convert_to_chunks_data(cls, parsed_sentence, sent_id):
         text_to_chunk_data = {}
         for entity in parsed_sentence.ents:
-            cleanText = cls.clean_raw_text(entity.text)
+            cleanText = cls._clean_raw_text(entity.text)
             chunk_data = NLPChunkData()
             chunk_data.text = cleanText
             chunk_data.originalText = entity.text
@@ -84,7 +85,7 @@ class NLPDataParser:
             text_to_chunk_data[cleanText] = chunk_data
 
         for chunk in parsed_sentence.noun_chunks:
-            cleanText = cls.clean_raw_text(chunk.text)
+            cleanText = cls._clean_raw_text(chunk.text)
             if cleanText not in text_to_chunk_data:
                 chunk_data = NLPChunkData()
                 chunk_data.text = cleanText
@@ -129,25 +130,27 @@ class NLPDataParser:
         return raw_sentence, sentence_data, sentence_index_to_word_index
 
     @classmethod
-    def readAnnotations(cls, annotations_file):
-        annotationsData = set(filter(lambda l: l != "", open(annotations_file).read().split("\n")))
+    def read_annotations(cls, annotations_file):
+        with open(annotations_file) as f:
+            annotations_data = {
+                row for row in f.read().split('\n')
+                if row != ''
+            }
 
-        annotations = {}
-        for annotation in annotationsData:
-            id_, chunk1, connection_type, chunk2, _ = annotation.split("\t")
-            chunk1 = cls.clean_raw_text(chunk1)
-            chunk2 = cls.clean_raw_text(chunk2)
-            if id_ not in annotations:
-                annotations[id_] = []
+        annotations = defaultdict(list)
+        for annotation in annotations_data:
+            id_, chunk1, connection_type, chunk2, _ = annotation.split('\t')
+            chunk1 = cls._clean_raw_text(chunk1)
+            chunk2 = cls._clean_raw_text(chunk2)
             if connection_type in MODEL_PREDICTED_LABELS:
                 annotations[id_].append((connection_type, chunk1, chunk2))
         return annotations
 
     @staticmethod
-    def readCorpus(corpus_file):
+    def read_corpus(corpus_file):
         sentences = {}
         for line in codecs.open(corpus_file, encoding="utf8"):
-            sentId, sent = line.strip().split("\t")
+            sent_id, sent = line.strip().split("\t")
             sent = sent.replace("-LRB-", "(").replace("-RRB-", ")")
-            sentences[sentId] = sent
+            sentences[sent_id] = sent
         return sentences

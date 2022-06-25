@@ -3,7 +3,7 @@ from time import time
 
 from clf_model import ClfModel
 from config import OUTPUT_TAG
-from eval import evaluate_predictions
+from eval import _evaluate_predictions
 from nlp_data_parser import NLPDataParser
 
 
@@ -73,11 +73,11 @@ def _validate_after_refactor():
         dict2_rounded_json = json.dumps(dict2_rounded)
         return dict1_rounded_json == dict2_rounded_json
 
-    actual_dev_metrics = evaluate_predictions(
+    actual_dev_metrics = _evaluate_predictions(
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/DEV.annotations',
         predictions_file='DEV.annotations.Pred'
     )
-    actual_train_metrics = evaluate_predictions(
+    actual_train_metrics = _evaluate_predictions(
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/TRAIN.annotations',
         predictions_file='TRAIN.annotations.Pred'
     )
@@ -85,16 +85,16 @@ def _validate_after_refactor():
     print(f"actual_dev_metrics:\n{json.dumps(actual_dev_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
     expected_dev_metrics = {
         "Live_In": {
-            "precision": 0.532258064516129,
-            "recall": 0.5409836065573771,
-            "f1": 0.5365853658536586
+            "Precision": 0.532258064516129,
+            "Recall": 0.5409836065573771,
+            "F1": 0.5365853658536586
         }
     }
     expected_train_metrics = {
         "Live_In": {
-            "precision": 0.7664233576642335,
-            "recall": 0.8267716535433071,
-            "f1": 0.7954545454545454
+            "Precision": 0.7664233576642335,
+            "Recall": 0.8267716535433071,
+            "F1": 0.7954545454545454
         }
     }
 

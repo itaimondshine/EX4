@@ -1,53 +1,76 @@
 import sys
+from collections import defaultdict
 
 
-# todo - refactor
-def parse_annotations_file(annotation_file_path):
+def main():
+    gold_file, predictions_file = _read_program_args()
+
+    gold_annotations = _parse_annotations_file(gold_file)
+    predicted_annotations = _parse_annotations_file(predictions_file)
+    gold_relations = set(gold_annotations.keys())
+    predicted_relations = set(predicted_annotations.keys())
+
+    all_relations = gold_relations.intersection(predicted_relations)
+    eval_metrics = _calc_eval_metrics(all_relations, gold_annotations, predicted_annotations)
+
+    display_rows = []
+    for relation_type, eval_metrics in eval_metrics.items():
+        eval_metrics_r = _round_metrics(eval_metrics)
+        row = f"{relation_type}\tPrecision: {eval_metrics_r['Precision']}\tRecall: {eval_metrics_r['Recall']}\tF1: {eval_metrics_r['F1']}"
+        display_rows.append(row)
+    print('\n'.join(display_rows))
+
+
+def _read_program_args():
+    gold_file, predictions_file = sys.argv[1], sys.argv[2]
+    return gold_file, predictions_file
+
+
+def _parse_annotations_file(annotation_file_path):
+    annotations = defaultdict(set)
     with open(annotation_file_path) as annotations_file:
-        connections = {}
-        relations = set()
         for line in annotations_file.readlines():
-            tokens = line.split('\t')
-            id = tokens[0]
-            first_chunk = tokens[1]
-            connection = tokens[2]
-            second_chunk = tokens[3]
-            relations.add(connection)
-            if connection not in connections:
-                connections[connection] = set()
-            connections[connection].add((id, first_chunk.rstrip('.'), second_chunk.rstrip('.')))
+            sent_id, first_chunk, annotation, second_chunk, *_ = line.split('\t')
+            anno_data = (sent_id, first_chunk.rstrip('.'), second_chunk.rstrip('.'))
+            annotations[annotation].add(anno_data)
 
-        return connections, relations
+        return annotations
 
 
-def metrics(relations, gold_annotations, predicted_annotations):
-    metrics = {}
-    for relation in relations:
-        correctly_annotated = gold_annotations[relation].intersection(predicted_annotations[relation])
-        precision = len(correctly_annotated) / float(len(predicted_annotations[relation]))
-        recall = len(correctly_annotated) / float(len(gold_annotations[relation]))
-        f1 = 2 * precision * recall / float(precision + recall)
-        metrics[relation] = {'precision': precision, 'recall': recall, 'f1': f1}
-    return metrics
+def _calc_eval_metrics(all_relations, gold_annotations, predicted_annotations):
+    eval_metrics = {}
+    for relation in all_relations:
+        rel_predicted = predicted_annotations[relation]
+        rel_gold = gold_annotations[relation]
+
+        correctly_annotated = rel_gold.intersection(rel_predicted)
+        precision = len(correctly_annotated) / len(rel_predicted)
+        recall = len(correctly_annotated) / len(rel_gold)
+        f1 = (2 * precision * recall) / (precision + recall)
+
+        eval_metrics[relation] = {'Precision': precision, 'Recall': recall, 'F1': f1}
+    return eval_metrics
 
 
-def print_metrics(metrics):
-    for relation, metrics_r in metrics.items():
-        print("%s\tPrecision: %s\tRecall: %s\tF1: %s" % (
-            relation, metrics_r['precision'], metrics_r['recall'], metrics_r['f1']))
+# todo - delete
+def _evaluate_predictions(gold_file, predictions_file):
+    gold_annotations = _parse_annotations_file(gold_file)
+    predicted_annotations = _parse_annotations_file(predictions_file)
+    gold_relations = set(gold_annotations.keys())
+    predicted_relations = set(predicted_annotations.keys())
+
+    all_relations = gold_relations.intersection(predicted_relations)
+    eval_metrics = _calc_eval_metrics(all_relations, gold_annotations, predicted_annotations)
+    return eval_metrics
 
 
-def main_func(params):
-    res = evaluate_predictions(params[0], params[1])
-    print_metrics(res)
-
-
-def evaluate_predictions(gold_file, predictions_file):
-    gold_annotations, gold_relations = parse_annotations_file(gold_file)
-    predicted_annotations, predicted_relations = parse_annotations_file(predictions_file)
-    res = metrics(gold_relations.intersection(predicted_relations), gold_annotations, predicted_annotations)
-    return res
+def _round_metrics(metrics_dict, digits=3):
+    rounded_metrics_dict = {
+        key: round(val, digits) if key in ('Precision', 'Recall', 'F1') else val
+        for key, val in metrics_dict.items()
+    }
+    return rounded_metrics_dict
 
 
 if __name__ == "__main__":
-    main_func(sys.argv[1:])
+    main()
