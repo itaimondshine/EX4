@@ -1,6 +1,7 @@
 import sys
 
 
+# todo - refactor
 def parse_annotations_file(annotation_file_path):
     with open(annotation_file_path) as annotations_file:
         connections = {}

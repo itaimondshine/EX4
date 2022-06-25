@@ -7,13 +7,13 @@ from eval import evaluate_predictions
 from nlp_data_parser import NLPDataParser
 
 
-def main(trainCorpusFile, devCorpusFile, trainAnnotationsFile, devAnnotationsFile):
+def main(train_corpus_file, dev_corpus_file, train_annotations_file, dev_annotations_file):
     log_info('starting the run')
     run_start_time = time()
 
-    train_data_set = NLPDataParser.parse(trainCorpusFile, trainAnnotationsFile)
+    train_data_set = NLPDataParser.parse(train_corpus_file, train_annotations_file)
     log_info('parse train dataset finished')
-    dev_data_set = NLPDataParser.parse(devCorpusFile, devAnnotationsFile)
+    dev_data_set = NLPDataParser.parse(dev_corpus_file, dev_annotations_file)
     log_info('parse dev dataset finished')
 
     model = ClfModel()
@@ -83,19 +83,18 @@ def _validate_after_refactor():
     )
 
     print(f"actual_dev_metrics:\n{json.dumps(actual_dev_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
-
     expected_dev_metrics = {
         "Live_In": {
-            "precision": 0.5824175824175825,
-            "recall": 0.4344262295081967,
-            "f1": 0.4976525821596243
+            "precision": 0.532258064516129,
+            "recall": 0.5409836065573771,
+            "f1": 0.5365853658536586
         }
     }
     expected_train_metrics = {
         "Live_In": {
-            "precision": 1.0,
+            "precision": 0.7664233576642335,
             "recall": 0.8267716535433071,
-            "f1": 0.9051724137931035
+            "f1": 0.7954545454545454
         }
     }
 
@@ -106,8 +105,8 @@ def _validate_after_refactor():
 
 if __name__ == "__main__":
     main(
-        trainCorpusFile='./Corpus.TRAIN.txt',
-        devCorpusFile='./Corpus.DEV.txt',
-        trainAnnotationsFile='./TRAIN.annotations.txt',
-        devAnnotationsFile='./DEV.annotations.txt'
+        train_corpus_file='./Corpus.TRAIN.txt',
+        dev_corpus_file='./Corpus.DEV.txt',
+        train_annotations_file='./TRAIN.annotations.txt',
+        dev_annotations_file='./DEV.annotations.txt'
     )

@@ -4,6 +4,7 @@ sent37	Reagan	Live_In	America
 sent50	Nixon	Live_In	U.S	
 sent68	Barry Goldwater	Live_In	Arizona	
 sent70	Michael Minns	Live_In	England	
+sent77	Kennedy	Live_In	Soviet	
 sent79	Anastas Mikoyan	Live_In	Soviet	
 sent79	Khrushchev	Live_In	Soviet	
 sent80	Khrushchev	Live_In	Soviet	
@@ -11,14 +12,18 @@ sent80	Mikoyan	Live_In	Soviet
 sent83	Kennedy	Live_In	U.S	
 sent86	Khrushchev	Live_In	Soviet	
 sent86	Roy Medvedev	Live_In	Soviet	
+sent88	Alekseev	Live_In	Cuba	
+sent88	Alekseev	Live_In	Soviet	
 sent88	Aleksander Alekseev	Live_In	Soviet	
 sent89	Alekseev	Live_In	Soviet	
 sent161	Imelda Marcos	Live_In	Philippines	
+sent173	Hoffman	Live_In	Fresno	
 sent173	Brent	Live_In	Fresno	
 sent188	June Anderson	Live_In	U.S	
 sent188	Carol Vaness	Live_In	U.S	
 sent207	Johnny Paul Penry	Live_In	Texas	
 sent208	Charles A. Palmer	Live_In	Texas	
+sent210	Pamela Moseley Carpenter	Live_In	Livingston	
 sent278	Herbert S. Okun	Live_In	U.S	
 sent281	Vernon A. Walters	Live_In	U.S	
 sent282	Ali Sunni Muntasser	Live_In	Libya	
@@ -36,25 +41,37 @@ sent541	Albert O. Harjula	Live_In	Thomaston
 sent542	Daniel Sullivan	Live_In	Boothbay	
 sent543	Brian Michaud	Live_In	Millinocket	
 sent561	Bush	Live_In	U.S	
+sent563	Ralph K. Winter	Live_In	New York	
 sent589	Susanna Petrosyan	Live_In	Leninakan	
 sent589	Gayaney	Live_In	Leninakan	
 sent665	Mary	Live_In	Rock Hill	
+sent667	Mary Campbell of Clover	Live_In	Clover	
 sent667	Mary Campbell	Live_In	Clover	
 sent670	Darryl Breniser	Live_In	Blue Ball	
+sent755	David Graham	Live_In	Houston	
 sent756	Earl Long	Live_In	Louisiana	
 sent770	Fred Coe	Live_In	Nashville	
 sent780	Sophie Masloff	Live_In	Pittsburgh	
+sent790	Gadhafi	Live_In	U.S	
 sent816	Dominique Beuff	Live_In	Khartoum	
+sent843	Parks	Live_In	Montgomery	
+sent851	Spencer Christian	Live_In	America	
+sent857	Norodom Ranariddh	Live_In	Thailand	
 sent857	Prince Norodom Ranariddh	Live_In	Thailand	
 sent860	Li Zhaoxing	Live_In	Beijing	
 sent860	Li Zhaoxing	Live_In	China	
+sent860	Li Zhaoxing	Live_In	Vietnam	
 sent862	Eduard A. Shevardnadze	Live_In	Soviet	
+sent862	Eduard A. Shevardnadze	Live_In	China	
+sent862	Eduard A. Shevardnadze	Live_In	Chinese-Soviet	
 sent871	Li	Live_In	Beijing	
 sent871	Li	Live_In	China	
 sent934	Robert Bourassa	Live_In	Canada	
 sent934	Robert Bourassa	Live_In	Quebec	
 sent934	Robert Bourassa	Live_In	Quebec	
+sent952	Jake Garn	Live_In	R-Utah	
 sent953	Sultan Al-Saud	Live_In	Saudi Arabia	
+sent953	Rodolfo Neri Vela	Live_In	Saudi Arabia	
 sent961	Jean Hackett	Live_In	New York City	
 sent1016	Lou Ray	Live_In	Fontana	
 sent1019	Lance Davis	Live_In	Ontario	
@@ -63,11 +80,14 @@ sent1028	Denise Garland	Live_In	San Bernardino County
 sent1037	William Doyle	Live_In	Manhattan	
 sent1043	LeRoy	Live_In	New York	
 sent1049	Norma Viscomi	Live_In	Niagara Falls	
+sent1054	Leslie Kota	Live_In	Troy	
 sent1063	Stacy Lin Bickel	Live_In	Tempe	
 sent1063	Deborah Sue Tomazin	Live_In	Phoenix	
+sent1065	Bickel	Live_In	Tempe	
 sent1065	Richard Pavese	Live_In	Tempe	
 sent1131	William J. Bennett	Live_In	U.S	
 sent1132	James Thompson	Live_In	Illinois	
+sent1132	James Thompson	Live_In	Chicago	
 sent1134	Adam Urbanski	Live_In	Rochester	
 sent1145	Peter McWalters	Live_In	Rochester	
 sent1147	Richard C. Wallace	Live_In	Pittsburgh	
@@ -88,7 +108,9 @@ sent1415	William R. Higgins	Live_In	U.S
 sent1417	Higgins	Live_In	America	
 sent1434	Hayes Picou	Live_In	Louisiana	
 sent1434	Hayes Picou	Live_In	Cameron Parish	
+sent1450	John Jamison	Live_In	Galveston	
 sent1483	Quayles	Live_In	Washington	
+sent1483	Tucker	Live_In	Corinne	
 sent1483	Tucker	Live_In	Washington	
 sent1483	Corinne	Live_In	Washington	
 sent1500	Richard Taylor	Live_In	Atlanta	
@@ -99,8 +121,18 @@ sent1523	Mrs. Say	Live_In	Kentucky
 sent1524	Mary Fisher	Live_In	Louisville	
 sent1524	Mary Fisher	Live_In	Okolona	
 sent1526	Mitch McConnell	Live_In	U.S	
+sent1526	Mitch McConnell	Live_In	Louisville	
 sent1534	Higgins	Live_In	Danville	
 sent1534	Higgins	Live_In	Louisville	
+sent1557	Richard Kahn	Live_In	Alexandria	
+sent1558	Robin Woods	Live_In	Washington	
 sent1612	Tom Van Sant	Live_In	Santa Monica	
 sent1632	Gerald Baliles	Live_In	Virginia	
 sent1637	Richard Celeste	Live_In	Ohio	
+sent4599	Robert F. Kennedy	Live_In	New York	
+sent4602	Kennedy	Live_In	California	
+sent4612	Sirhan Bishara Sirhan	Live_In	Los Angeles	
+sent4618	John Lennon	Live_In	Lennon	
+sent4641	Herschel Grynszpan	Live_In	Poland	
+sent4641	Ernst vom Rath	Live_In	Paris	
+sent4653	John Connally	Live_In	Texas	

@@ -2,11 +2,10 @@ import codecs
 
 import spacy
 
-from config import SPACY_MODEL_NAME, MODEL_PREDICTED_LABELS
+from config import SPACY_MODEL_NAME, MODEL_PREDICTED_LABELS, NO_RELATION_TAG
 from data_classes import NLPSentenceWordData, NLPChunkData
 
 nlp = spacy.load(SPACY_MODEL_NAME)
-NO_RELATION_TAG = 'NR'
 ROOT_IDX = 0
 
 

@@ -3,6 +3,7 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from external_data_sources import COUNTRIES, CITIES
 
+# todo - refactor this method, its easy to recognise again
 SHIFT_M = 1
 START_M = "#S#"
 END_M = "#E#"
@@ -19,6 +20,7 @@ def extract_features(dataset, feature_name_to_id, allow_map_new_features):
         for feature in create_features(chunk1, chunk2, sentence):
             feature_is_known = feature in feature_name_to_id
             if not feature_is_known and allow_map_new_features:
+                # todo - refactor this method, its easy to recognise again
                 feature_name_to_id[feature] = len(feature_name_to_id)
 
             if feature in feature_name_to_id:
