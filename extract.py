@@ -1,3 +1,6 @@
+# Itai Mondshine 207814724
+# Itay Lotan 308453935
+
 import sys
 from datetime import datetime, timedelta
 from time import time

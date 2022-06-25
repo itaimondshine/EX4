@@ -1,3 +1,6 @@
+# Itai Mondshine 207814724
+# Itay Lotan 308453935
+
 import numpy as np
 
 from scipy.sparse import csr_matrix

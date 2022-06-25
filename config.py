@@ -1,3 +1,6 @@
+# Itai Mondshine 207814724
+# Itay Lotan 308453935
+
 # consts
 NO_RELATION_TAG = 'NR'
 ALL_POSSIBLE_MODEL_LABELS = {'Kill', 'Located_In', 'Live_In', 'Work_For', 'OrgBased_In'}

@@ -1,3 +1,7 @@
+# Itai Mondshine 207814724
+# Itay Lotan 308453935
+
+
 class NLPChunkData:
     def __init__(self):
         self.text = None
