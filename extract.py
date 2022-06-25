@@ -77,8 +77,8 @@ def _validate_after_refactor():
     )
     expected_train_metrics = {'Live_In': {'precision': 1.0, 'recall': 0.8267716535433071, 'f1': 0.9051724137931035}}
 
-    assert _compare_metric_dicts(actual_dev_metrics, expected_dev_metrics) is True
-    assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True
+    assert _compare_metric_dicts(actual_dev_metrics, expected_dev_metrics) is True, (actual_dev_metrics, expected_dev_metrics)
+    assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True, (actual_train_metrics, expected_train_metrics)
     print('_validate_after_refactor() - all good')
 
 
