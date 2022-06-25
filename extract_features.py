@@ -19,9 +19,9 @@ def extract_features_for_train(train_dataset):
 
 
 def extract_features_for_predict(dataset, feature_name_to_idx):
-    features, tags = _map_and_extract_features(
+    features, *_ = _map_and_extract_features(
         dataset, feature_name_to_idx, allow_map_new_features=False)
-    return features, tags
+    return features
 
 
 def _map_and_extract_features(dataset, feature_name_to_idx, allow_map_new_features):

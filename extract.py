@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timedelta
 from time import time
 
@@ -7,32 +8,57 @@ from eval import _evaluate_predictions
 from nlp_data_parser import NLPDataParser
 
 
-def main(train_corpus_file, dev_corpus_file, train_annotations_file, dev_annotations_file):
+def main():
+    train_corpus_file, train_annotations_file, test_corpus_file = _read_program_arguments()
+
     log_info('starting the run')
     run_start_time = time()
 
-    train_data_set = NLPDataParser.parse(train_corpus_file, train_annotations_file)
+    train_dataset = NLPDataParser.parse(train_corpus_file, train_annotations_file)
     log_info('parse train dataset finished')
-    dev_data_set = NLPDataParser.parse(dev_corpus_file, dev_annotations_file)
-    log_info('parse dev dataset finished')
+    test_dataset = NLPDataParser.parse(test_corpus_file)
+    log_info('parse test dataset finished')
 
     model = ClfModel()
-    model.train(train_data_set)
+    model.train(train_dataset)
 
     log_info('train finished')
 
-    train_predictions = model.predict(train_data_set)
-    dev_predictions = model.predict(dev_data_set)
+    train_predictions = model.predict(train_dataset)
+    test_predictions = model.predict(test_dataset)
     log_info('predict finished')
 
-    write_final_annotations_to_file(dev_data_set, dev_predictions, './DEV.annotations.Pred')
-    write_final_annotations_to_file(train_data_set, train_predictions, './TRAIN.annotations.Pred')
+    write_final_annotations_to_file(train_dataset, train_predictions, './TRAIN.annotations.predicted.txt')
+    write_final_annotations_to_file(test_dataset, test_predictions, './TEST.annotations.predicted.txt')
 
     run_duration_seconds = round(time() - run_start_time)
     log_info(f'all done. run duration: {timedelta(seconds=run_duration_seconds)}')
 
     # todo - delete
     _validate_after_refactor()
+
+
+def _read_program_arguments():
+    train_corpus_file, train_annotations_file, test_corpus_file = sys.argv[1], sys.argv[2], sys.argv[3]
+    if _corpus_is_in_processed_format(train_corpus_file):
+        print('the provided train corpus file is in the .processed format, please provide '
+              'the raw unprocessed corpus file instead')
+        sys.exit(1)
+
+    if _corpus_is_in_processed_format(test_corpus_file):
+        print('the provided test corpus file is in the .processed format, please provide '
+              'the raw unprocessed corpus file instead')
+        sys.exit(1)
+
+    return train_corpus_file, train_annotations_file, test_corpus_file
+
+
+def _corpus_is_in_processed_format(corpus_file):
+    with open(corpus_file) as f:
+        corpus_file_first_char = f.read(1)
+
+    is_in_processed_format = corpus_file_first_char == '#'
+    return is_in_processed_format
 
 
 def log_info(message):
@@ -73,17 +99,17 @@ def _validate_after_refactor():
         dict2_rounded_json = json.dumps(dict2_rounded)
         return dict1_rounded_json == dict2_rounded_json
 
-    actual_dev_metrics = _evaluate_predictions(
+    actual_test_metrics = _evaluate_predictions(
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/DEV.annotations',
-        predictions_file='DEV.annotations.Pred'
+        predictions_file='./TEST.annotations.predicted.txt'
     )
     actual_train_metrics = _evaluate_predictions(
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/TRAIN.annotations',
-        predictions_file='TRAIN.annotations.Pred'
+        predictions_file='./TRAIN.annotations.predicted.txt'
     )
 
-    print(f"actual_dev_metrics:\n{json.dumps(actual_dev_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
-    expected_dev_metrics = {
+    print(f"actual_test_metrics:\n{json.dumps(actual_test_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
+    expected_test_metrics = {
         "Live_In": {
             "Precision": 0.532258064516129,
             "Recall": 0.5409836065573771,
@@ -98,15 +124,12 @@ def _validate_after_refactor():
         }
     }
 
-    assert _compare_metric_dicts(actual_dev_metrics, expected_dev_metrics) is True
+    assert _compare_metric_dicts(actual_test_metrics, expected_test_metrics) is True
     assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True
     print('_validate_after_refactor() - all good')
 
 
 if __name__ == "__main__":
-    main(
-        train_corpus_file='./Corpus.TRAIN.txt',
-        dev_corpus_file='./Corpus.DEV.txt',
-        train_annotations_file='./TRAIN.annotations.txt',
-        dev_annotations_file='./DEV.annotations.txt'
-    )
+    # todo - delete
+    sys.argv.extend(['./Corpus.TRAIN.txt', './TRAIN.annotations.txt', './Corpus.DEV.txt'])
+    main()

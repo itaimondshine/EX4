@@ -17,7 +17,7 @@ class ClfModel:
         self._clf.fit(train_features, train_tags)
 
     def predict(self, dataset):
-        features, tags = extract_features_for_predict(dataset, self._feature_name_to_idx)
+        features = extract_features_for_predict(dataset, self._feature_name_to_idx)
         raw_predictions = self._clf.predict(features)
         predictions = np.array([row_preds[0] for row_preds in raw_predictions])
         return predictions

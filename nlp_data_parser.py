@@ -12,15 +12,15 @@ ROOT_IDX = 0
 
 class NLPDataParser:
     @classmethod
-    def parse(cls, corpus_file, annotations_file):
-        corpus = cls.read_corpus(corpus_file)
-        annotations = cls.read_annotations(annotations_file)
+    def parse(cls, corpus_file, annotations_file=None):
+        corpus = cls._read_corpus(corpus_file)
+        annotations = cls.read_annotations(annotations_file) if annotations_file else None
 
-        data = []
+        dataset = []
         for sent_id, sentence in corpus.items():
-            data.extend(cls._parse_sentence(sent_id, sentence, annotations))
+            dataset.extend(cls._parse_sentence(sent_id, sentence, annotations))
 
-        return data
+        return dataset
 
     @staticmethod
     def _clean_raw_text(text):
@@ -37,6 +37,7 @@ class NLPDataParser:
         for chunk_data in chunks_data:
             cls._add_global_sentence_data(chunk_data, raw_sentence, sentence_data, sentence_index_to_word_index)
 
+        annotations = annotations or defaultdict(list)
         for parsed_ne1 in chunks_data:
             for parsed_ne2 in chunks_data:
                 if parsed_ne1.text != parsed_ne2.text:
@@ -147,7 +148,7 @@ class NLPDataParser:
         return annotations
 
     @staticmethod
-    def read_corpus(corpus_file):
+    def _read_corpus(corpus_file):
         sentences = {}
         for line in codecs.open(corpus_file, encoding="utf8"):
             sent_id, sent = line.strip().split("\t")
