@@ -4,7 +4,7 @@ from time import time
 from clf_model import ClfModel
 from config import OUTPUT_TAG
 from eval import evaluate_predictions
-from nlp_data_parser import NO_CONNECTION_TAG, NLPDataParser
+from nlp_data_parser import NLPDataParser
 
 
 def main(trainCorpusFile, devCorpusFile, trainAnnotationsFile, devAnnotationsFile):

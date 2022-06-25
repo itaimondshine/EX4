@@ -6,7 +6,7 @@ from config import SPACY_MODEL_NAME, MODEL_PREDICTED_LABELS
 from data_classes import NLPSentenceWordData, NLPChunkData
 
 nlp = spacy.load(SPACY_MODEL_NAME)
-NO_CONNECTION_TAG = 'NC'
+NO_RELATION_TAG = 'NR'
 ROOT_IDX = 0
 
 
@@ -15,7 +15,6 @@ class NLPDataParser:
     def parse(cls, corpus_file, annotations_file):
         corpus = cls.readCorpus(corpus_file)
         annotations = cls.readAnnotations(annotations_file)
-        x = 1
 
         data = []
         for sent_id, sentence in corpus.items():
@@ -51,7 +50,7 @@ class NLPDataParser:
                             found_any_relation = True
 
                     if not found_any_relation:
-                        yield ((arg1, arg2, (sentence_data)), NO_CONNECTION_TAG)
+                        yield ((arg1, arg2, (sentence_data)), NO_RELATION_TAG)
 
     @classmethod
     def _add_global_sentence_data(cls, chunk_data, raw_sentence, sentence_data, sentence_index_to_word_index):
