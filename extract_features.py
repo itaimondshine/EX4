@@ -59,58 +59,58 @@ def create_features(chunk1, chunk2, sentence):
 
 # features implementation
 def _chunk_text_f(chunk):
-    return f"WordsInChunk({chunk.text})"
+    return f'1_wic({chunk.text})'
 
 
 def _chunk_text_before_f(chunk_id, chunk, sentence):
-    return f"WordBeforeChunk{chunk_id}({_get_prev_word(chunk, sentence)})"
+    return f'2_wbc{chunk_id}({_get_prev_word(chunk, sentence)})'
 
 
 def _chunk_text_after_f(chunk_id, chunk, sentence):
-    return f"WordAfterChunk{chunk_id}({_get_next_word(chunk, sentence)})"
+    return f'3_wac{chunk_id}({_get_next_word(chunk, sentence)})'
 
 
 def _chunk_entity_type_f(chunk, chunk_id):
-    return f"Type{chunk_id}({chunk.entType})"
+    return f'4_et{chunk_id}({chunk.entType})'
 
 
 def _chunks_concated_entity_types_f(chunk1, chunk2):
-    return f"TypeConcat({chunk1.entType + chunk2.entType})"
+    return f'5_cet({chunk1.entType + chunk2.entType})'
 
 
 def _dependency_tag_f(chunk_id, sentence):
     tag = sentence[chunk_id - 1].tag
-    return f"DependencyTag1({tag})"
+    return f'6_dt({tag})'
 
 
 def _dependency_type_f(direction, chunk_id, sentence):
     tag = sent_word_data(chunk_id, sentence).dependency
-    return f"DependencyType{direction}({tag})"
+    return f'7_dt{direction}({tag})'
 
 
-def to_string_dependency_word(chunk_id, sentence):
+def _string_dependency_word_f(chunk_id, sentence):
     tag = sent_word_data(chunk_id, sentence).lemma
-    return f"DependencyWord1({tag})"
+    return f'8_dw({tag})'
 
 
 def _forward_tag_f(chunk, sentence, chunk_id):
-    return f"ForwardTag{chunk_id}({get_forward_tag(chunk, sentence)})"
+    return f'9_ft{chunk_id}({get_forward_tag(chunk, sentence)})'
 
 
 def _chunk_head_f(chunk, chunk_id):
-    return f"HeadTag{chunk_id}({chunk.headWordTag})"
+    return f'10_ht{chunk_id}({chunk.headWordTag})'
 
 
 def _bag_of_words_f(first_chunk, second_chunk, sentence):
     first, second = get_first_and_second_chunk(first_chunk, second_chunk)
     between_words = sentence[first.lastWordIndex:second.firstWordIndex - 1]
 
-    return [f"BagOfWords{word.lemma}" for word in between_words]
+    return [f'11_bow{word.lemma}' for word in between_words]
 
 
 def _is_location_f(chunk, chunk_id):
     text = chunk.text.lower()
-    return f"IsLocation{chunk_id}({'T' if text in COUNTRIES or text in CITIES else 'F'})"
+    return f"12_il{chunk_id}({'T' if text in COUNTRIES or text in CITIES else 'F'})"
 
 
 # helpers
@@ -209,15 +209,15 @@ def _calc_dependency_word_list_features_list(first_chunk, second_chunk, sentence
     all_dependency_tags = []
     i = 0
     while graph[i] != graph[i + 1]:
-        all_dependency_tags.append(to_string_dependency_word(graph[i], sentence))
+        all_dependency_tags.append(_string_dependency_word_f(graph[i], sentence))
         i += 1
         if i + 1 >= len(graph):
             return all_dependency_tags
     i += 1
-    all_dependency_tags.append(to_string_dependency_word(graph[i], sentence))
+    all_dependency_tags.append(_string_dependency_word_f(graph[i], sentence))
     i += 1
     while i < len(graph):
-        all_dependency_tags.append(to_string_dependency_word(graph[i], sentence))
+        all_dependency_tags.append(_string_dependency_word_f(graph[i], sentence))
         i += 1
     return all_dependency_tags
 
