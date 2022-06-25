@@ -11,33 +11,59 @@ CHILD_MARK = "#C#"
 ROOT_MARK = "#R#"
 
 
-def extract_features(dataset, feature_name_to_id, allow_map_new_features):
-    feature_rows = []
-    tags = []
-    for ((chunk1, chunk2, sentence), tag) in dataset:
-        features_row = []
-        for feature in create_features(chunk1, chunk2, sentence):
-            feature_is_known = feature in feature_name_to_id
-            if not feature_is_known and allow_map_new_features:
-                # todo - refactor this method, its easy to recognise again
-                feature_name_to_id[feature] = len(feature_name_to_id)
+def extract_features_for_train(train_dataset):
+    feature_name_to_idx = dict()
+    train_features, train_tags = _map_and_extract_features(
+        train_dataset, feature_name_to_idx, allow_map_new_features=True)
+    return train_features, train_tags, feature_name_to_idx
 
-            if feature in feature_name_to_id:
-                features_row.append(feature_name_to_id[feature])
 
-        feature_rows.append(features_row)
-        tags.append(tag)
+def extract_features_for_predict(dataset, feature_name_to_idx):
+    features, tags = _map_and_extract_features(
+        dataset, feature_name_to_idx, allow_map_new_features=False)
+    return features, tags
 
-    X = csr_matrix([
-        convert_dense_to_sparse_array(dense, feature_name_to_id)
-        for dense in feature_rows]
-    )
-    Y = np.array(tags)
+
+def _map_and_extract_features(dataset, feature_name_to_idx, allow_map_new_features):
+    positive_feature_rows = []
+    actual_tags = []
+
+    for ((chunk1, chunk2, sentence), actual_tag) in dataset:
+        positive_feature_ids_row = []
+        positive_features = create_features(chunk1, chunk2, sentence)
+        for positive_feature in positive_features:
+            feature_is_known = positive_feature in feature_name_to_idx
+            if feature_is_known:
+                feature_id = feature_name_to_idx[positive_feature]
+                positive_feature_ids_row.append(feature_id)
+            elif allow_map_new_features:
+                new_feature_id = len(feature_name_to_idx)
+                feature_name_to_idx[positive_feature] = new_feature_id
+                positive_feature_ids_row.append(new_feature_id)
+
+        positive_feature_rows.append(positive_feature_ids_row)
+        actual_tags.append(actual_tag)
+
+    X = to_sparse_matrix(positive_feature_rows, feature_name_to_idx)
+    Y = np.array(actual_tags)
     return X, Y
 
 
+def to_sparse_matrix(positive_feature_rows, feature_name_to_idx):
+    def _positive_features_to_sparse_array(dense, feature_name_to_id):
+        sparse = np.zeros(len(feature_name_to_id))
+        for i in dense:
+            sparse[i] = 1
+        return sparse
+
+    return csr_matrix([
+        _positive_features_to_sparse_array(positive_feature_ids, feature_name_to_idx)
+        for positive_feature_ids in positive_feature_rows
+    ])
+
+
 def create_features(chunk1, chunk2, sentence):
-    return [
+    positive_features = [
         _chunk_entity_type_f(chunk1, 1),
         _chunk_entity_type_f(chunk2, 2),
         _chunk_text_f(chunk1),
@@ -55,6 +81,7 @@ def create_features(chunk1, chunk2, sentence):
         *_calc_dependency_word_list_features_list(chunk1, chunk2, sentence),
         *_calc_dependency_type_list_features_list(chunk1, chunk2, sentence),
     ]
+    return positive_features
 
 
 # features implementation
@@ -163,13 +190,6 @@ def find_dependency_routes(first_chunk, second_chunk, sentence):
     second_route = find_dependency_route(second_chunk, sentence)
     first, second = dispose_overlapping(first_route, second_route)
     return first, second
-
-
-def convert_dense_to_sparse_array(dense, feature_name_to_id):
-    sparse = np.zeros(len(feature_name_to_id))
-    for i in dense:
-        sparse[i] = 1
-    return sparse
 
 
 def _get_prev_word(chunk, sentence):
