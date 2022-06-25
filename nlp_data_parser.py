@@ -2,7 +2,7 @@ import codecs
 
 import spacy
 
-from config import SPACY_MODEL_NAME, TARGET_TAGS
+from config import SPACY_MODEL_NAME, MODEL_PREDICTED_LABELS
 from data_classes import NLPSentenceWordData, NLPChunkData
 
 nlp = spacy.load(SPACY_MODEL_NAME)
@@ -15,6 +15,7 @@ class NLPDataParser:
     def parse(cls, corpus_file, annotations_file):
         corpus = cls.readCorpus(corpus_file)
         annotations = cls.readAnnotations(annotations_file)
+        x = 1
 
         data = []
         for sent_id, sentence in corpus.items():
@@ -45,7 +46,7 @@ class NLPDataParser:
 
                     found_any_relation = False
                     for anno_relation_type, anno_chunk1_text, anno_chunk2_text in annotations[sent_id]:
-                        if arg1.text == anno_chunk1_text and arg2.text == anno_chunk2_text and anno_relation_type in TARGET_TAGS:
+                        if arg1.text == anno_chunk1_text and arg2.text == anno_chunk2_text and anno_relation_type in MODEL_PREDICTED_LABELS:
                             yield ((arg1, arg2, (sentence_data)), anno_relation_type)
                             found_any_relation = True
 
@@ -140,7 +141,7 @@ class NLPDataParser:
             chunk2 = cls.clean_raw_text(chunk2)
             if id_ not in annotations:
                 annotations[id_] = []
-            if connection_type in TARGET_TAGS:
+            if connection_type in MODEL_PREDICTED_LABELS:
                 annotations[id_].append((connection_type, chunk1, chunk2))
         return annotations
 

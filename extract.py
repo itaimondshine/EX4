@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from time import time
 
 from clf_model import ClfModel
+from config import OUTPUT_TAG
 from eval import evaluate_predictions
 from nlp_data_parser import NO_CONNECTION_TAG, NLPDataParser
 
@@ -24,8 +25,8 @@ def main(trainCorpusFile, devCorpusFile, trainAnnotationsFile, devAnnotationsFil
     dev_predictions = model.predict(dev_data_set)
     log_info('predict finished')
 
-    write_predictions_to_file(dev_data_set, 'DEV.annotations.Pred', dev_predictions)
-    write_predictions_to_file(train_data_set, 'TRAIN.annotations.Pred', train_predictions)
+    write_final_annotations_to_file(dev_data_set, dev_predictions, './DEV.annotations.Pred')
+    write_final_annotations_to_file(train_data_set, train_predictions, './TRAIN.annotations.Pred')
 
     run_duration_seconds = round(time() - run_start_time)
     log_info(f'all done. run duration: {timedelta(seconds=run_duration_seconds)}')
@@ -38,19 +39,25 @@ def log_info(message):
     print(f'{datetime.now().strftime("%H:%M:%S")} - {message}')
 
 
-def write_predictions_to_file(dataset, output_file_name, predicted):
-    with open(output_file_name, 'w') as output_file:
-        lines = []
-        for i, prediction in enumerate(predicted):
-            if prediction == NO_CONNECTION_TAG:
-                continue
-            arg1, arg2, _ = dataset[i][0]
-            lines.append('%s\t%s\t%s\t%s\t' % (arg1.id, arg1.text, prediction, arg2.text))
-        output_file.write('\n'.join(lines))
+def write_final_annotations_to_file(dataset, predicted, output_annotations_file_path):
+    all_predicted_annotations_ordered = []
+    for i, prediction in enumerate(predicted):
+        chunk1, chunk2, _ = dataset[i][0]
+        annotation_text = f'{chunk1.id}\t{chunk1.text}\t{prediction}\t{chunk2.text}\t'
+        all_predicted_annotations_ordered.append((prediction, annotation_text))
+
+    output_lines = [
+        annotation_text for prediction, annotation_text in all_predicted_annotations_ordered
+        if prediction == OUTPUT_TAG
+    ]
+    with open(output_annotations_file_path, 'w') as output_file:
+        output_file.write('\n'.join(output_lines))
 
 
 # todo - delete
 def _validate_after_refactor():
+    import json
+
     def _compare_metric_dicts(dict1, dict2, decimals=4):
         import json
 
@@ -70,15 +77,30 @@ def _validate_after_refactor():
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/DEV.annotations',
         predictions_file='DEV.annotations.Pred'
     )
-    expected_dev_metrics = {'Live_In': {'precision': 0.6052631578947368, 'recall': 0.3770491803278688, 'f1': 0.46464646464646464}}
     actual_train_metrics = evaluate_predictions(
         gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/TRAIN.annotations',
         predictions_file='TRAIN.annotations.Pred'
     )
-    expected_train_metrics = {'Live_In': {'precision': 1.0, 'recall': 0.8267716535433071, 'f1': 0.9051724137931035}}
 
-    assert _compare_metric_dicts(actual_dev_metrics, expected_dev_metrics) is True, (actual_dev_metrics, expected_dev_metrics)
-    assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True, (actual_train_metrics, expected_train_metrics)
+    print(f"actual_dev_metrics:\n{json.dumps(actual_dev_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
+
+    expected_dev_metrics = {
+        "Live_In": {
+            "precision": 0.5824175824175825,
+            "recall": 0.4344262295081967,
+            "f1": 0.4976525821596243
+        }
+    }
+    expected_train_metrics = {
+        "Live_In": {
+            "precision": 1.0,
+            "recall": 0.8267716535433071,
+            "f1": 0.9051724137931035
+        }
+    }
+
+    assert _compare_metric_dicts(actual_dev_metrics, expected_dev_metrics) is True
+    assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True
     print('_validate_after_refactor() - all good')
 
 

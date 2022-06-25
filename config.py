@@ -1,2 +1,7 @@
 SPACY_MODEL_NAME = 'en_core_web_sm'
-TARGET_TAGS = {'OrgBased_In', 'Live_In', 'Kill', 'Located_In', 'Work_For'}
+
+ALL_POSSIBLE_MODEL_LABELS = {'Kill', 'Located_In', 'Live_In', 'Work_For', 'OrgBased_In'}
+MODEL_PREDICTED_LABELS = ALL_POSSIBLE_MODEL_LABELS
+# MODEL_PREDICTED_LABELS = {'Live_In'}
+
+OUTPUT_TAG = 'Live_In'
