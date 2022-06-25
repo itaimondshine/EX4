@@ -55,18 +55,6 @@ def _calc_eval_metrics(all_relations, gold_annotations, predicted_annotations):
     return eval_metrics
 
 
-# todo - delete
-def _evaluate_predictions(gold_file, predictions_file):
-    gold_annotations = _parse_annotations_file(gold_file)
-    predicted_annotations = _parse_annotations_file(predictions_file)
-    gold_relations = set(gold_annotations.keys())
-    predicted_relations = set(predicted_annotations.keys())
-
-    all_relations = gold_relations.intersection(predicted_relations)
-    eval_metrics = _calc_eval_metrics(all_relations, gold_annotations, predicted_annotations)
-    return eval_metrics
-
-
 def _round_metrics(metrics_dict, digits=3):
     rounded_metrics_dict = {
         key: round(val, digits) if key in ('Precision', 'Recall', 'F1') else val

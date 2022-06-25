@@ -7,7 +7,6 @@ from time import time
 
 from clf_model import ClfModel
 from config import OUTPUT_TAG
-from eval import _evaluate_predictions
 from nlp_data_parser import NLPDataParser
 
 
@@ -36,9 +35,6 @@ def main():
 
     run_duration_seconds = round(time() - run_start_time)
     log_info(f'all done. run duration: {timedelta(seconds=run_duration_seconds)}')
-
-    # todo - delete
-    _validate_after_refactor()
 
 
 def _read_program_arguments():
@@ -83,56 +79,5 @@ def write_final_annotations_to_file(dataset, predicted, output_annotations_file_
         output_file.write('\n'.join(output_lines))
 
 
-# todo - delete
-def _validate_after_refactor():
-    import json
-
-    def _compare_metric_dicts(dict1, dict2, decimals=4):
-        import json
-
-        dict1_rounded = {
-            outer_key: {inner_key: round(val, decimals) for inner_key, val in inner_dict.items()}
-            for outer_key, inner_dict in dict1.items()
-        }
-        dict2_rounded = {
-            outer_key: {inner_key: round(val, decimals) for inner_key, val in inner_dict.items()}
-            for outer_key, inner_dict in dict2.items()
-        }
-        dict1_rounded_json = json.dumps(dict1_rounded)
-        dict2_rounded_json = json.dumps(dict2_rounded)
-        return dict1_rounded_json == dict2_rounded_json
-
-    actual_test_metrics = _evaluate_predictions(
-        gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/DEV.annotations',
-        predictions_file='./TEST.annotations.predicted.txt'
-    )
-    actual_train_metrics = _evaluate_predictions(
-        gold_file='/Users/itayl/git/toar2/toar2/nlp/ass4/resources/data/TRAIN.annotations',
-        predictions_file='./TRAIN.annotations.predicted.txt'
-    )
-
-    print(f"actual_test_metrics:\n{json.dumps(actual_test_metrics, indent=4)}\n\nactual_train_metrics:\n{json.dumps(actual_train_metrics, indent=4)}\n")
-    expected_test_metrics = {
-        "Live_In": {
-            "Precision": 0.532258064516129,
-            "Recall": 0.5409836065573771,
-            "F1": 0.5365853658536586
-        }
-    }
-    expected_train_metrics = {
-        "Live_In": {
-            "Precision": 0.7664233576642335,
-            "Recall": 0.8267716535433071,
-            "F1": 0.7954545454545454
-        }
-    }
-
-    assert _compare_metric_dicts(actual_test_metrics, expected_test_metrics) is True
-    assert _compare_metric_dicts(actual_train_metrics, expected_train_metrics) is True
-    print('_validate_after_refactor() - all good')
-
-
 if __name__ == "__main__":
-    # todo - delete
-    sys.argv.extend(['./Corpus.TRAIN.txt', './TRAIN.annotations.txt', './Corpus.DEV.txt'])
     main()
