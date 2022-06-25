@@ -10,14 +10,14 @@ class ClfModel:
         self._feature_name_to_id = None
         self._clf = None
 
-    def train(self, dataset):
+    def train(self, train_dataset):
         self._feature_name_to_id = {}
         self._clf = self._init_catboost_classifier()
-        features, tags = extract_features(dataset, self._feature_name_to_id, allow_map_new_features=True)
+        features, tags = extract_features(train_dataset, self._feature_name_to_id, allow_map_new_features=True)
         self._clf.fit(features, tags)
 
-    def predict(self, data):
-        features, tags = extract_features(data, self._feature_name_to_id, allow_map_new_features=False)
+    def predict(self, dataset):
+        features, tags = extract_features(dataset, self._feature_name_to_id, allow_map_new_features=False)
         raw_predictions = self._clf.predict(features)
         predictions = np.array([row_preds[0] for row_preds in raw_predictions])
         return predictions
